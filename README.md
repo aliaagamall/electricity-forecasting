@@ -1,4 +1,4 @@
-# Electricity Consumption Forecasting Project Documentation
+# Electricity Consumption Forecasting Project
 
 ## Overview
 This project, developed by Aliaa, focuses on forecasting electricity consumption using a Recurrent Neural Network (RNN) model. The work is conducted in a Jupyter notebook with supporting Python files for configuration, model definition, and a Flask API that utilizes the `ElectricityPredictor` class. The project structure supports data management, modeling, and deployment, with an API for predictions and explanations.
