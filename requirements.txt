@@ -1,0 +1,10 @@
+# Python version: 3.11.13 (main, Jun  4 2025, 08:57:29) [GCC 11.4.0]
+pandas==2.2.2
+numpy==2.0.2
+matplotlib==3.10.0
+seaborn==0.13.2
+scipy==1.15.3
+sklearn==1.6.1
+torch==2.6.0+cu124
+torchmetrics==1.7.4
+shap==0.48.0

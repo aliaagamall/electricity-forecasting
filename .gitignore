@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+*.log
+*.sqlite
+*.db
+*.pdf
+*.pbix
+src/__pycache__/
+src/test/
+.DS_Store
+*.tar.gz
