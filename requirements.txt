@@ -3,8 +3,7 @@ pandas==2.2.2
 numpy==2.0.2
 matplotlib==3.10.0
 seaborn==0.13.2
-scipy==1.15.3
-sklearn==1.6.1
-torch==2.6.0+cu124
+scikit-learn==1.4.2
+torch==2.6.0
 torchmetrics==1.7.4
 shap==0.48.0
