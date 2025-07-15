@@ -7,13 +7,13 @@ import shap
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-from config import config
+from config import Config
 from model import TimeSeriesRNN
 
 class ElectricityPredictor:
     """Simple electricity consumption predictor"""
     
-    def __init__(self, model_path=config.model_path, scaler_path=config.scaler_path):
+    def __init__(self, model_path=Config.model_path, scaler_path=Config.scaler_path):
         self.model_path = model_path 
         self.scaler_path = scaler_path 
         
@@ -44,13 +44,13 @@ class ElectricityPredictor:
         """Load and prepare data for prediction"""
         # Load data
         df = pd.read_csv(csv_path)
-        df[config.timestamp_column] = pd.to_datetime(df[config.timestamp_column])
-        df.sort_values(config.timestamp_column, inplace=True)
-        df.set_index(config.timestamp_column, inplace=True)
+        df[Config.timestamp_column] = pd.to_datetime(df[Config.timestamp_column])
+        df.sort_values(Config.timestamp_column, inplace=True)
+        df.set_index(Config.timestamp_column, inplace=True)
         
         # Apply transformations (same as training)
-        df[config.target_column] = self.power_transformer.fit_transform(df[[config.target_column]])
-        df[config.target_column] = self.scaler.transform(df[[config.target_column]])
+        df[Config.target_column] = self.power_transformer.fit_transform(df[[Config.target_column]])
+        df[Config.target_column] = self.scaler.transform(df[[Config.target_column]])
         
         self.data = df
         print(f"Data prepared with shape: {df.shape}")
@@ -58,11 +58,11 @@ class ElectricityPredictor:
     
     def get_latest_sequence(self):
         """Get latest sequence for prediction"""
-        if len(self.data) < config.seq_length:
+        if len(self.data) < Config.seq_length:
             raise ValueError("Not enough data to form a full sequence.")
         
-        last_seq = self.data[config.target_column].values[-config.seq_length:]
-        return torch.tensor(last_seq, dtype=torch.float32).view(1, config.seq_length, 1)
+        last_seq = self.data[Config.target_column].values[-Config.seq_length:]
+        return torch.tensor(last_seq, dtype=torch.float32).view(1, Config.seq_length, 1)
     
     def predict_next(self, inverse_transform=True):
         """Predict next value"""
@@ -98,7 +98,7 @@ class ElectricityPredictor:
             
             # Add prediction to data for next step
             next_timestamp = current_data.index[-1] + pd.Timedelta(minutes=15)
-            current_data.loc[next_timestamp] = {config.target_column: pred_val}
+            current_data.loc[next_timestamp] = {Config.target_column: pred_val}
         
         predictions = np.array(predictions)
         
@@ -113,8 +113,8 @@ class ElectricityPredictor:
     
     def _get_sequence_from_data(self, data):
         """Helper to get sequence from data"""
-        last_seq = data[config.target_column].values[-config.seq_length:]
-        return torch.tensor(last_seq, dtype=torch.float32).view(1, config.seq_length, 1)
+        last_seq = data[Config.target_column].values[-Config.seq_length:]
+        return torch.tensor(last_seq, dtype=torch.float32).view(1, Config.seq_length, 1)
     
     def explain_prediction(self, save_plot=None):
         """Explain prediction using SHAP"""
@@ -145,16 +145,16 @@ class ElectricityPredictor:
             values=shap_vals[0].flatten(),
             base_values=base_value,
             data=seq[0].squeeze().numpy(),
-            feature_names=[f"t-{config.seq_length - i}" for i in range(config.seq_length)]
+            feature_names=[f"t-{Config.seq_length - i}" for i in range(Config.seq_length)]
         )
         
         # Plot waterfall
-        shap.plots.waterfall(explanation, max_display=config.max_display)
+        shap.plots.waterfall(explanation, max_display=Config.max_display)
         
         # Save plot if requested
-        if save_plot or (save_plot is None and config.save_plots):
+        if save_plot or (save_plot is None and Config.save_plots):
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            plot_path = f"{config.plots_dir}/shap_explanation_{timestamp}.png"
+            plot_path = f"{Config.plots_dir}/shap_explanation_{timestamp}.png"
             plt.savefig(plot_path, dpi=300, bbox_inches='tight')
             print(f"Plot saved to {plot_path}")
         
@@ -169,7 +169,7 @@ class ElectricityPredictor:
         pred = self.predict_next()
         
         # Get current stats
-        latest_values = self.data[config.target_column].tail(10)
+        latest_values = self.data[Config.target_column].tail(10)
         
         # Transform back for comparison
         latest_original = [
